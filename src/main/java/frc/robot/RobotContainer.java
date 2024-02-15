@@ -6,6 +6,9 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.OIConstants;
 import frc.robot.commands.SwerveJoysticksCmd;
 
+import frc.robot.subsystems.SwerveModule;
+import frc.robot.subsystems.SwerveSubsystem;
+
 public class RobotContainer {
     
     private final SwerveSubsystem swerveSubsystem = new SwerveSubsystem();
@@ -25,9 +28,16 @@ public class RobotContainer {
 
     private void configureButtonBindings(){
         //new JoystickButton(driverJoystick, 2).whenPressed(() -> swerveSubsystem.zeroHeading());
+        //new JoystickButton(driverJoystick, 2).onTrue(() -> );
+        new JoystickButton(driverJoystick, 1).onTrue(swerveSubsystem.runOnce(swerveSubsystem::flagChanging));
     }
 
     public Command getAutonomousCommand(){
         return null;
     }
+
+    // public Command wheelZeroingCommand(){
+    //     swerveSubsystem.wheelZeroing();
+    //     return 
+    // }
 }

@@ -1,4 +1,4 @@
-package frc.robot;
+package frc.robot.subsystems;
 
 import com.kauailabs.navx.frc.AHRS;
 
@@ -15,6 +15,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveConstants;
 
 public class SwerveSubsystem extends SubsystemBase {
+    public boolean flagZero = false;
+
     private final SwerveModule frontLeft = new SwerveModule(
         DriveConstants.kFrontLeftDriveMotorPort,
         DriveConstants.kFrontLeftTurningMotorPort,
@@ -88,6 +90,24 @@ public class SwerveSubsystem extends SubsystemBase {
     @Override 
     public void periodic() {
         SmartDashboard.putNumber("Robot Heading", getHeading());
+
+        SmartDashboard.putNumber("FrontLeft Steer:", frontLeft.getTurningPosition());
+        SmartDashboard.putNumber("FrontRight Steer:", frontRight.getTurningPosition());
+        SmartDashboard.putNumber("BackLeft Steer:", backLeft.getTurningPosition());
+        SmartDashboard.putNumber("BackRight Steer:", backRight.getTurningPosition());
+
+        SmartDashboard.putNumber("CANFrontLeft:", frontLeft.getAbsoluteEncoderPos());
+        SmartDashboard.putNumber("CANFrontRight:", frontRight.getAbsoluteEncoderPos());
+        SmartDashboard.putNumber("CANBackLeft:", backLeft.getAbsoluteEncoderPos());
+        SmartDashboard.putNumber("CANBackRight:", backRight.getAbsoluteEncoderPos());
+
+        SmartDashboard.putBoolean("FLAG: ", flagZero);
+
+        if(flagZero){ wheelZeroing(); }
+    }
+
+    public void flagChanging(){
+        flagZero = !flagZero;
     }
 
     public void stopModules(){
@@ -103,6 +123,12 @@ public class SwerveSubsystem extends SubsystemBase {
         frontRight.setDesiredState(desiredStates[1]);
         backLeft.setDesiredState(desiredStates[2]);
         backRight.setDesiredState(desiredStates[3]);
+    }
+    public void wheelZeroing(){
+        // frontLeft.wheelZero();
+        // frontRight.wheelZero();
+        // backLeft.wheelZero();
+        // backRight.wheelZero();
     }
 
 }

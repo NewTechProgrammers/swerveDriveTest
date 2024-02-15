@@ -1,400 +1,212 @@
+// Copyright (c) FIRST and other WPILib contributors.
+// Open Source Software; you can modify and/or share it under the terms of
+// the WPILib BSD license file in the root directory of this project.
+
 package frc.robot;
 
-import edu.wpi.first.wpilibj.Joystick;
+import com.ctre.phoenix6.hardware.CANcoder;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkLowLevel.MotorType;
+
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
-import com.ctre.phoenix6.hardware.CANcoder;
-import com.ctre.phoenix6.configs.CANcoderConfiguration;
-
-import com.revrobotics.RelativeEncoder;
-
-
-import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
-//import edu.wpi.first.wpilibj.motorcontrol.VictorSP;
-
-//import edu.wpi.first.wpilibj.Encoder;
-
-//import com.ctre.*;
-
-//import com.ctre.phoenix6.hardware.CANcoder;
-
-// import com.ctre.sensors.CANCoderConfiguration;
-
-// import com.ctre.phoenix6.sensors.CANCoderFaults;
-// import com.ctre.phoenix.sensors.CANCoderStickyFaults;
-// import com.ctre.phoenix.sensors.MagnetFieldStrength;
-// import com.ctre.phoenix.sensors.WPI_CANCoder;
-
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.SparkMaxAlternateEncoder;
-import com.revrobotics.SparkPIDController;
-import com.revrobotics.CANSparkLowLevel.MotorType;
+/**
+ * The VM is configured to automatically run this class, and to call the
+ * functions corresponding to
+ * each mode, as described in the TimedRobot documentation. If you change the
+ * name of this class or
+ * the package after creating this project, you must also update the
+ * build.gradle file in the
+ * project.
+ */
 
 public class Robot extends TimedRobot {
-    boolean flag = false;
+    private Command m_autonomousCommand;
+    private RobotContainer m_robotContainer;
+    // private XboxController xbox_stick = new XboxController(0);
 
-    private static final int MOTOR1_CAN_ID = 2;
-    private static final int MOTOR1_ROTATE_CAN_ID = 3;
+    
+    // /* Drive For Testing */
+    // // Front Left
+    // private CANSparkMax m1Drive = new CANSparkMax(8, MotorType.kBrushless);
+    // private CANSparkMax m1Steer = new CANSparkMax(9, MotorType.kBrushless);
+    // private CANcoder c1 = new CANcoder(13);
 
-    private static final int MOTOR2_CAN_ID = 4;
-    private static final int MOTOR2_ROTATE_CAN_ID = 5;
+    // // Front Right
+    // private CANSparkMax m2Drive = new CANSparkMax(7, MotorType.kBrushless);
+    // private CANSparkMax m2Steer = new CANSparkMax(6, MotorType.kBrushless);
+    // private CANcoder c2 = new CANcoder(12);
 
-    private static final int MOTOR3_CAN_ID = 7;
-    private static final int MOTOR3_ROTATE_CAN_ID = 6;
+    
+    
+    // // Back Left
+    // private CANSparkMax m3Drive = new CANSparkMax(2, MotorType.kBrushless);
+    // private CANSparkMax m3Steer = new CANSparkMax(3, MotorType.kBrushless);
+    // private CANcoder c3 = new CANcoder(10);
+    
+    // // Back Right
+    // private CANSparkMax m4Drive = new CANSparkMax(4, MotorType.kBrushless);
+    // private CANSparkMax m4Steer = new CANSparkMax(5, MotorType.kBrushless);
+    // private CANcoder c4 = new CANcoder(11);
+    
 
-    private static final int MOTOR4_CAN_ID = 8;
-    private static final int MOTOR4_ROTATE_CAN_ID = 9;
+    // /* Shooting */
+    // // private CANSparkMax m1 = new CANSparkMax(14, MotorType.kBrushless);
+    // // private CANSparkMax m2 = new CANSparkMax(15, MotorType.kBrushless);
+    // // private CANSparkMax m3 = new CANSparkMax(16, MotorType.kBrushless);
+    // // private CANSparkMax m4 = new CANSparkMax(17, MotorType.kBrushless);
+    
+    
 
-    // Motor 1
-    private CANSparkMax neoMotor1;
-    private CANSparkMax neoMotor1Rotate;
-
-    private RelativeEncoder neo1MotorEncoder;
-    private SparkPIDController neo1MotorPID;
-
-    // Motor 2
-    private CANSparkMax neoMotor2;
-    private CANSparkMax neoMotor2Rotate;
-
-    private RelativeEncoder neo2MotorEncoder;
-    private SparkPIDController neo2MotorPID;
-
-    // Motor 3
-    private CANSparkMax neoMotor3;
-    private CANSparkMax neoMotor3Rotate;
-
-    private RelativeEncoder neo3MotorEncoder;
-    private SparkPIDController neo3MotorPID;
-
-    // Motor 4
-    private CANSparkMax neoMotor4;
-    private CANSparkMax neoMotor4Rotate;
-
-    private RelativeEncoder neo4MotorEncoder;
-    private SparkPIDController neo4MotorPID;
-
-    public double kP, kI, kD, kIz, kFF, kMaxOutput, kMinOutput;
-
-    /* CanCoders: */
-    // private static final String canBusName = "rio";
-
-    // private final CANcoder cancoder1 = new CANcoder(10, canBusName);
-    // private final CANcoder cancoder2 = new CANcoder(11, canBusName);
-    // private final CANcoder cancoder3 = new CANcoder(12, canBusName);
-    // private final CANcoder cancoder4 = new CANcoder(13, canBusName);
-
-    // private CANEncoder encoder1;
-
-    private static final double WHEEL_DIAMETER_METERS = 0.15; // Zmień na średnicę koła w metrach
-    private static final double WHEEL_CIRCUMFERENCE_METERS = WHEEL_DIAMETER_METERS * Math.PI;
-
-    XboxController xbox_stick = new XboxController(0); // 0 is the USB Port to be used as indicated on the Driver
-                                                       // Station
-    // private Joystick m_stick = new Joystick(0);
-
-    private RelativeEncoder m_alternateEncoder;
-
+    /**
+     * This function is run when the robot is first started up and should be used
+     * for any
+     * initialization code.
+     */
     @Override
     public void robotInit() {
+        // m1Drive.setInverted(true);
+        // m1Steer.setInverted(true);
+        // m1Drive.burnFlash();
+        // m1Steer.burnFlash();
 
-        neoMotor1 = new CANSparkMax(MOTOR1_CAN_ID, MotorType.kBrushless);
-        neoMotor1Rotate = new CANSparkMax(MOTOR1_ROTATE_CAN_ID, MotorType.kBrushless);
+        // m2Drive.setInverted(true);
+        // m2Steer.setInverted(false);
+        // m2Drive.burnFlash();
+        // m2Steer.burnFlash();
 
-        neoMotor2 = new CANSparkMax(MOTOR2_CAN_ID, MotorType.kBrushless);
-        neoMotor2Rotate = new CANSparkMax(MOTOR2_ROTATE_CAN_ID, MotorType.kBrushless);
+        // m3Drive.setInverted(true);
+        // m3Steer.setInverted(true);
+        // m3Drive.burnFlash();
+        // m3Steer.burnFlash();
 
-        neoMotor3 = new CANSparkMax(MOTOR3_CAN_ID, MotorType.kBrushless);
-        neoMotor3Rotate = new CANSparkMax(MOTOR3_ROTATE_CAN_ID, MotorType.kBrushless);
-
-        neoMotor4 = new CANSparkMax(MOTOR4_CAN_ID, MotorType.kBrushless);
-        neoMotor4Rotate = new CANSparkMax(MOTOR4_ROTATE_CAN_ID, MotorType.kBrushless);
-
+        // m4Drive.setInverted(true);
+        // m4Steer.setInverted(true);
+        // m4Drive.burnFlash();
+        // m4Steer.burnFlash();
+        // Instantiate our RobotContainer. This will perform all our button bindings,
+        // and put our
+        // autonomous chooser on the dashboard.
         
-
-        neoMotor2Rotate.restoreFactoryDefaults();
-        neo2MotorEncoder = neoMotor2Rotate.getEncoder();
-        neo2MotorPID = neoMotor2Rotate.getPIDController();
-
-        neoMotor3Rotate.restoreFactoryDefaults();
-        neo3MotorEncoder = neoMotor3Rotate.getEncoder();
-        neo3MotorPID = neoMotor3Rotate.getPIDController();
-
-        neoMotor1Rotate.restoreFactoryDefaults();
-        neo1MotorEncoder = neoMotor1Rotate.getEncoder();
-        neo1MotorPID = neoMotor1Rotate.getPIDController();
-
-        neoMotor4Rotate.restoreFactoryDefaults();
-        neo4MotorEncoder = neoMotor4Rotate.getEncoder();
-        neo4MotorPID = neoMotor4Rotate.getPIDController();
-        
-        // PID coefficients
-        kP = 0.1; 
-        kI = 1e-4;
-        kD = 1; 
-        kIz = 0; 
-        kFF = 0; 
-        kMaxOutput = 1; 
-        kMinOutput = -1;
-
-        // set PID coefficients
-        neo2MotorPID.setP(kP);
-        neo2MotorPID.setI(kI);
-        neo2MotorPID.setD(kD);
-        neo2MotorPID.setIZone(kIz);
-        neo2MotorPID.setFF(kFF);
-        neo2MotorPID.setOutputRange(kMinOutput, kMaxOutput);
-
-        neo3MotorPID.setP(kP);
-        neo3MotorPID.setI(kI);
-        neo3MotorPID.setD(kD);
-        neo3MotorPID.setIZone(kIz);
-        neo3MotorPID.setFF(kFF);
-        neo3MotorPID.setOutputRange(kMinOutput, kMaxOutput);
-
-        // display PID coefficients on SmartDashboard
-        SmartDashboard.putNumber("P Gain", kP);
-        SmartDashboard.putNumber("I Gain", kI);
-        SmartDashboard.putNumber("D Gain", kD);
-        SmartDashboard.putNumber("I Zone", kIz);
-        SmartDashboard.putNumber("Feed Forward", kFF);
-        SmartDashboard.putNumber("Max Output", kMaxOutput);
-        SmartDashboard.putNumber("Min Output", kMinOutput);
-        SmartDashboard.putNumber("Set Rotations", 0);
-
-
-        // /* Configure CANcoder */
-        // var toApply = new CANcoderConfiguration();
-
-        // /*
-        // * User can change the configs if they want, or leave it empty for
-        // * factory-default
-        // */
-        // cancoder1.getConfigurator().apply(toApply);
-        // cancoder2.getConfigurator().apply(toApply);
-        // cancoder3.getConfigurator().apply(toApply);
-        // cancoder4.getConfigurator().apply(toApply);
-
-        /* Speed up signals to an appropriate rate */
-        // cancoder1.getPosition().setUpdateFrequency(100);
-        // cancoder1.getVelocity().setUpdateFrequency(100);
-
-        // cancoder2.getPosition().setUpdateFrequency(100);
-        // cancoder2.getVelocity().setUpdateFrequency(100);
-
-        // cancoder3.getPosition().setUpdateFrequency(100);
-        // cancoder3.getVelocity().setUpdateFrequency(100);
-
-        // cancoder4.getPosition().setUpdateFrequency(100);
-        // cancoder4.getVelocity().setUpdateFrequency(100);
-
-        // m_alternateEncoder = neoMotor1.getAlternateEncoder(kAltEncType, kCPR);
-
-        // encoder = neoMotor.getEncoder();
-        // m_alternateEncoder = neoMotor1.getAlternateEncoder(kAltEncType, kCPR);
-
-        // encoder.setPosition(0); // Resetowanie pozycji enkodera przy uruchomieniu
+        m_robotContainer = new RobotContainer();
     }
 
+    /**
+     * This function is called every robot packet, no matter the mode. Use this for
+     * items like
+     * diagnostics that you want ran during disabled, autonomous, teleoperated and
+     * test.
+     *
+     * <p>
+     * This runs after the mode specific periodic functions, but before LiveWindow
+     * and
+     * SmartDashboard integrated updating.
+     */
     @Override
     public void robotPeriodic() {
+        // Runs the Scheduler. This is responsible for polling buttons, adding
+        // newly-scheduled
+        // commands, running already-scheduled commands, removing finished or
+        // interrupted commands,
+        // and running subsystem periodic() methods. This must be called from the
+        // robot's periodic
+        // block in order for anything in the Command-based framework to work.
+        CommandScheduler.getInstance().run();
 
-        // var pos = cancoder1.getPosition();
-        // System.out.println("Position is " + pos.toString() + " with " +
-        // pos.getTimestamp().getLatency() + " seconds of latency");
-
-        // var vel = cancoder1.getVelocity();
-        // /* This time wait for the signal to reduce latency */
-        // //vel.waitForUpdate(PRINT_PERIOD); // Wait up to our period
-
-        // System.out.println("Velocity is " +
-        // // vel.getValue() + " " +
-        // // vel.getUnits() + " with " +
-        // // vel.getTimestamp().getLatency() + " seconds of latency");
-
-        // /* Angle */
-        // System.out.println("Position can1: " + cancoder1.getPosition() + " cancoder2
-        // posititon: " + cancoder2.getPosition() + "\n");
-        // System.out.println("Position can3: " + cancoder3.getPosition() + " cancoder4
-        // posititon: " + cancoder4.getPosition() + "\n");
-        // System.out.println("Angle : " +
-        // (Double.valueOf(cancoder3.getPosition().toString().substring(0,4) ) *
-        // (360.0/4096.0) * 4000 ) + "\n\n");
-
-        /* Angle */
-
-        /*
-         * System.out.println("Position can1: " + cancoder1.getAbsolutePosition() +
-         * " cancoder2 posititon: " + cancoder2.getAbsolutePosition() + "\n");
-         * System.out.println("Position can3: " + cancoder3.getAbsolutePosition() +
-         * " cancoder4 posititon: " + cancoder4.getAbsolutePositi on() + "\n\n");
-         */
-
-        // System.out.println();
-
-        // mechanism.update(cancoder.getPosition());
-    }
-
-    @Override
-    public void teleopPeriodic() {
-
-        double LeftX = xbox_stick.getLeftX();
-        double RightX = xbox_stick.getRightX();
-        double LeftY = xbox_stick.getLeftY();
-        double RightY = xbox_stick.getRightY();
-
-        // read PID coefficients from SmartDashboard
-        double p = SmartDashboard.getNumber("P Gain", 0);
-        double i = SmartDashboard.getNumber("I Gain", 0);
-        double d = SmartDashboard.getNumber("D Gain", 0);
-        double iz = SmartDashboard.getNumber("I Zone", 0);
-        double ff = SmartDashboard.getNumber("Feed Forward", 0);
-        double max = SmartDashboard.getNumber("Max Output", 0);
-        double min = SmartDashboard.getNumber("Min Output", 0);
-        double rotations = SmartDashboard.getNumber("Set Rotations", 0);
+        // SmartDashboard.putNumber("Front Left Drive:", m1Drive.getEncoder().getPosition());
+        // SmartDashboard.putNumber("Front Left Steer", m1Steer.getEncoder().getPosition());
+        // SmartDashboard.putNumber("Front Left can def: ", c1.getPosition().getValueAsDouble()); 
+        // SmartDashboard.putNumber("Front Left can absolute: ", c1.getAbsolutePosition().getValueAsDouble()); 
 
 
-
-        if(xbox_stick.getAButtonPressed())
-        {
-            neoMotor1Rotate.getEncoder().setPosition(0);
-            neoMotor2Rotate.getEncoder().setPosition(0);
-            neoMotor3Rotate.getEncoder().setPosition(0);
-            neoMotor4Rotate.getEncoder().setPosition(0);
-        }
+        // SmartDashboard.putNumber("Front Right Drive:", m2Drive.getEncoder().getPosition());
+        // SmartDashboard.putNumber("Front Right Steer", m2Steer.getEncoder().getPosition() * -1);
+        // SmartDashboard.putNumber("Front Right can def: ", c2.getPosition().getValueAsDouble()); // 0 - 0.5 -0.5 - 0
+        // SmartDashboard.putNumber("Front Right can absolute: ", c2.getAbsolutePosition().getValueAsDouble()); // dobrze ccw 0-1
 
 
-        // if PID coefficients on SmartDashboard have changed, write new values to controller
-        
-        if((p != kP)) { neo2MotorPID.setP(p); kP = p; }
-        if((i != kI)) { neo2MotorPID.setI(i); kI = i; }
-        if((d != kD)) { neo2MotorPID.setD(d); kD = d; }
-        if((iz != kIz)) { neo2MotorPID.setIZone(iz); kIz = iz; }
-        if((ff != kFF)) { neo2MotorPID.setFF(ff); kFF = ff; }
-        if((max != kMaxOutput) || (min != kMinOutput)) { 
-            neo2MotorPID.setOutputRange(min, max); 
-            kMinOutput = min; kMaxOutput = max; 
-        }
-
-        neo2MotorPID.setReference(rotations, CANSparkMax.ControlType.kPosition);
-    
-        SmartDashboard.putNumber("SetPoint", rotations);
-        SmartDashboard.putNumber("ProcessVariable", neo2MotorEncoder.getPosition());
-        
-        System.out.println("Encoder pos: " + neo2MotorEncoder.getPosition() + "\n");
-
-        
-        if((p != kP)) { neo3MotorPID.setP(p); kP = p; }
-        if((i != kI)) { neo3MotorPID.setI(i); kI = i; }
-        if((d != kD)) { neo3MotorPID.setD(d); kD = d; }
-        if((iz != kIz)) { neo3MotorPID.setIZone(iz); kIz = iz; }
-        if((ff != kFF)) { neo3MotorPID.setFF(ff); kFF = ff; }
-        if((max != kMaxOutput) || (min != kMinOutput)) { 
-            neo3MotorPID.setOutputRange(min, max); 
-            kMinOutput = min; kMaxOutput = max; 
-        }
-
-        neo3MotorPID.setReference(rotations, CANSparkMax.ControlType.kPosition);
-    
-        SmartDashboard.putNumber("SetPoint", rotations);
-        SmartDashboard.putNumber("ProcessVariable", neo3MotorEncoder.getPosition());
-        
-        System.out.println("Encoder pos: " + neo3MotorEncoder.getPosition() + "\n");
-        
-        
-
-        // System.out.println("RightX: " + RightX);
-        // System.out.println("RightY: " + RightY);
-        // System.out.println("LeftY: " + LeftY);
-
-        /*
-         * neoMotor.set(-0.2); // Uruchomienie silnika z prędkością 10% !! nie używać
-         * 100%
-         * neoMotor1.set(-0.2);
-         * 
-         * double rotations = encoder.getPosition(); // Odczytanie liczby obrotów
-         * double distanceMeters = rotations * WHEEL_CIRCUMFERENCE_METERS; // Obliczenie
-         * dystansu
-         * 
-         * double rotations1 = encoder1.getPosition();
-         * double distanceMeters1 = rotations1 * WHEEL_CIRCUMFERENCE_METERS; //
-         * Obliczenie dystansu
-         * 
-         * // System.out.println("Dystans: " + distanceMeters + " metrow");
-         */
+        // SmartDashboard.putNumber("Back Left Drive:", m3Drive.getEncoder().getPosition());
+        // SmartDashboard.putNumber("Back Left Steer", m3Steer.getEncoder().getPosition());
+        // SmartDashboard.putNumber("Back Left can def: ", c3.getPosition().getValueAsDouble());
+        // SmartDashboard.putNumber("Back Left can absolute: ", c3.getAbsolutePosition().getValueAsDouble());
 
 
+        // SmartDashboard.putNumber("Back Right Drive:", m4Drive.getEncoder().getPosition());
+        // SmartDashboard.putNumber("Back Right Steer", m4Steer.getEncoder().getPosition());
+        // SmartDashboard.putNumber("Back Right can def: ", c4.getPosition().getValueAsDouble());
+        // SmartDashboard.putNumber("Back Right can absolute: ", c4.getAbsolutePosition().getValueAsDouble());
 
-        if (LeftY <= -0.3)
-        {
-            neoMotor1.set(0.2);
-            neoMotor4.set(-0.2);
-
-            neoMotor2.set(0.2);
-            neoMotor3.set(-0.2);
-        }
-        if (LeftY >= 0.3)
-        {
-
-            neoMotor1.set(-0.2);
-            neoMotor4.set(0.2);
-
-            neoMotor2.set(-0.2);
-            neoMotor3.set(0.2);
-
-        }
-        if (LeftY <= 0.3 && LeftY >= -0.3)
-        {
-            neoMotor1.set(0);
-            neoMotor4.set(0);
-
-            neoMotor2.set(0.0);
-            neoMotor3.set(0.0);
-        }
-
-        if (RightX >= 0.3)
-        {
-            neoMotor1Rotate.set(-0.2);
-            neoMotor4Rotate.set(-0.2);
-        }
-        if (RightX <= -0.3)
-        {
-        
-            neoMotor1Rotate.set(0.2);
-            neoMotor4Rotate.set(0.2);
-        }
-        if (RightX < 0.3 && RightX > -0.3)
-        {
-             neoMotor1Rotate.set(0);
-             neoMotor4Rotate.set(0);
-        }
-
-        
-
-        // if (xbox_stick.getBButtonPressed()) {
-        // cancoder1.setPosition(0);
-        // cancoder2.setPosition(0);
-        // cancoder3.setPosition(0);
-        // cancoder4.setPosition(0);
-
-        // }
-        // if (xbox_stick.getAButtonPressed()) {
-        // // how much from current to 9
-        // var rots = 9.0 -
-        // Double.valueOf(cancoder2.getAbsolutePosition().toString().substring(0, 4));
-        // double power = 0.1 * rots / Math.abs(9.0);
-
-        // // neoMotor1.set(power);
-        // }
 
     }
 
+    /** This function is called once each time the robot enters Disabled mode. */
     @Override
-    public void disabledPeriodic() { }
+    public void disabledInit() {
+    }
 
+    @Override
+    public void disabledPeriodic() {
+    }
+
+    /**
+     * This autonomous runs the autonomous command selected by your
+     * {@link RobotContainer} class.
+     */
+    @Override
+    public void autonomousInit() {
+        m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+
+        // schedule the autonomous command (example)
+        if (m_autonomousCommand != null) {
+            m_autonomousCommand.schedule();
+        }
+    }
+
+    /** This function is called periodically during autonomous. */
+    @Override
+    public void autonomousPeriodic() {
+    }
+
+    @Override
+    public void teleopInit() {
+        // This makes sure that the autonomous stops running when
+        // teleop starts running. If you want the autonomous to
+        // continue until interrupted by another command, remove
+        // this line or comment it out.
+        if (m_autonomousCommand != null) {
+            m_autonomousCommand.cancel();
+        }
+    }
+
+    /** This function is called periodically during operator control. */
+    @Override
+    public void teleopPeriodic()
+    {
+    //    if(xbox_stick.getAButtonPressed()){
+    //     m1Drive.getEncoder().setPosition(0);
+    //     m2Drive.getEncoder().setPosition(0);
+    //     m3Drive.getEncoder().setPosition(0);
+    //     m4Drive.getEncoder().setPosition(0);
+
+    //     m1Steer.getEncoder().setPosition(0);
+    //     m2Steer.getEncoder().setPosition(0);
+    //     m3Steer.getEncoder().setPosition(0);
+    //     m4Steer.getEncoder().setPosition(0);
+    //    }
+    }
+
+    @Override
+    public void testInit() {
+        // Cancels all running commands at the start of test mode.
+        CommandScheduler.getInstance().cancelAll();
+    }
+
+    /** This function is called periodically during test mode. */
+    @Override
+    public void testPeriodic() {
+    }
 }
