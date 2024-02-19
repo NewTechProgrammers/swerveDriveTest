@@ -61,15 +61,15 @@ public class SwerveJoysticksCmd extends CommandBase {
         
         // 4. Contruct desired chassis speeds
         ChassisSpeeds chassisSpeeds;
-        // if(fieldOrientedFunction.get()){
-        //     // Relative to field
-        //     chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
-        //         xSpeed, ySpeed, turningSpeed, swerveSubsystem.getRotation2d());
-        //         System.out.println("CHASSIS SPEED WITH FIELD ORIENTED!");
-        // }
-        // else {
+        //  if(fieldOrientedFunction.get()){
+        //      // Relative to field
+        //      chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
+        //          xSpeed, ySpeed, turningSpeed, swerveSubsystem.getRotation2d());
+        //          System.out.println("CHASSIS SPEED WITH FIELD ORIENTED!");
+        //  }
+        //  else {
             chassisSpeeds = new ChassisSpeeds(xSpeed, ySpeed, turningSpeed);
-            //System.out.println("WITHOUT FIELD ORIENT!");
+            System.out.println("WITHOUT FIELD ORIENT!");
         //}
 
         // 5. Convert chassis speeds to idividual module states

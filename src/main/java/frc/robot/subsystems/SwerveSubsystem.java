@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import com.kauailabs.navx.frc.AHRS;
+import edu.wpi.first.wpilibj.SPI;
 
 
 import edu.wpi.first.math.geometry.Pose2d;
@@ -9,7 +10,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.wpilibj.SPI;
+
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveConstants;
@@ -64,19 +65,26 @@ public class SwerveSubsystem extends SubsystemBase {
         DriveConstants.kBackRightDriveAbsoluteEncoderOffsetRad,
         DriveConstants.kBackRightDriveAbsoluteEncoderReversed);
 
-    private final AHRS gyro = new AHRS(SPI.Port.kMXP);
+
+    
+    public AHRS gyro = new AHRS(SPI.Port.kMXP); // = new AHRS(SPI.Port.kMXP);
+    // public final AHRS gyro = new AHRS(SPI.Port.kMXP);
 
     public SwerveSubsystem() {
         new Thread(() -> {
             try {
+
                 Thread.sleep(1000);
                 zeroHeading();
-            } catch (Exception e) { }
+
+                
+            } catch (Exception e) {  }
         }).start();
     }
 
     public void zeroHeading() {
         gyro.reset();
+        //gyro.setInverted(true);
     }
 
     public double getHeading() {
@@ -86,6 +94,8 @@ public class SwerveSubsystem extends SubsystemBase {
     public Rotation2d getRotation2d() {
         return Rotation2d.fromDegrees(getHeading());
     }
+
+    
 
     @Override 
     public void periodic() {
@@ -101,9 +111,18 @@ public class SwerveSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("CANBackLeft:", backLeft.getAbsoluteEncoderPos());
         SmartDashboard.putNumber("CANBackRight:", backRight.getAbsoluteEncoderPos());
 
-        SmartDashboard.putBoolean("FLAG: ", flagZero);
+        SmartDashboard.putBoolean("FLAG FL: ", frontLeft.zeroModuleFlag);
+        SmartDashboard.putBoolean("FLAG FR: ", frontRight.zeroModuleFlag);
+        SmartDashboard.putBoolean("FLAG BL: ", backLeft.zeroModuleFlag);
+        SmartDashboard.putBoolean("FLAG BR: ", backRight.zeroModuleFlag);
 
-        if(flagZero){ wheelZeroing(); }
+        SmartDashboard.putNumber("Gyro angle: ", gyro.getAngle());
+        SmartDashboard.putNumber("Gyro yaw: ", gyro.getYaw());
+        SmartDashboard.putNumber("Gyro roll: ", gyro.getRoll());
+        SmartDashboard.putNumber("Gyro pitch: ", gyro.getPitch());
+
+        
+        
     }
 
     public void flagChanging(){
@@ -124,11 +143,12 @@ public class SwerveSubsystem extends SubsystemBase {
         backLeft.setDesiredState(desiredStates[2]);
         backRight.setDesiredState(desiredStates[3]);
     }
-    public void wheelZeroing(){
-        // frontLeft.wheelZero();
-        // frontRight.wheelZero();
-        // backLeft.wheelZero();
-        // backRight.wheelZero();
+    public void wheelZeroing()
+    {
+        frontLeft.zeroModuleFlagChange();
+        frontRight.zeroModuleFlagChange();
+        backLeft.zeroModuleFlagChange();
+        backRight.zeroModuleFlagChange();
     }
 
 }
