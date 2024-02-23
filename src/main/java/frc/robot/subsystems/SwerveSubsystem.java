@@ -2,18 +2,22 @@ package frc.robot.subsystems;
 
 import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj.SPI;
-
+import java.io.*; 
 
 import edu.wpi.first.math.geometry.Pose2d;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
+import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import frc.robot.Constants.DriveConstants;
+import frc.robot.Constants.PositionConstants;
 
 public class SwerveSubsystem extends SubsystemBase {
     public boolean flagZero = false;
@@ -66,9 +70,23 @@ public class SwerveSubsystem extends SubsystemBase {
         DriveConstants.kBackRightDriveAbsoluteEncoderReversed);
 
 
+
+
     
     public AHRS gyro = new AHRS(SPI.Port.kMXP); // = new AHRS(SPI.Port.kMXP);
     // public final AHRS gyro = new AHRS(SPI.Port.kMXP);
+
+    double ChangeX, ChangeY, ChangeZ;
+
+    SwerveDriveOdometry odometry = new SwerveDriveOdometry(
+    DriveConstants.kDriveKinematics, gyro.getRotation2d(),
+    new SwerveModulePosition[] {
+    frontLeft.getPosition(),
+    frontRight.getPosition(),
+    backLeft.getPosition(),
+    backRight.getPosition()
+    }, //HERE IS THY STARTING ORIENTATION AND POSITION IT SHALL'ETH BE CHANGED VIA A VARIABLE
+     new Pose2d(PositionConstants.PosX, PositionConstants.PosY, new Rotation2d()));
 
     public SwerveSubsystem() {
         new Thread(() -> {
@@ -95,12 +113,55 @@ public class SwerveSubsystem extends SubsystemBase {
         return Rotation2d.fromDegrees(getHeading());
     }
 
-    
+    public Pose2d getPose(){
+        return odometry.getPoseMeters();
+    }
+
+    public void resetOdometry(Pose2d pose){
+        odometry.resetPosition(getRotation2d(),new SwerveModulePosition[] {
+        frontLeft.getPosition(), frontRight.getPosition(),
+        backLeft.getPosition(), backRight.getPosition()
+        },pose);
+    }
 
     @Override 
     public void periodic() {
-        SmartDashboard.putNumber("Robot Heading", getHeading());
+        var gyroAngle = gyro.getRotation2d();
 
+        // Update the pose
+        odometry.update(gyroAngle,
+        new SwerveModulePosition[] {
+        frontLeft.getPosition(), frontRight.getPosition(),
+        backLeft.getPosition(), backRight.getPosition()
+        });
+        // make the pose to correct units
+        String temp = getPose().getTranslation().toString();
+        boolean isXminus = false, isYminus = false;
+        int Xcoord = temp.indexOf(": ")+2; 
+        int Ycoord = temp.lastIndexOf(": ")+2;
+        if(temp.charAt(Xcoord) == '-'){
+            Xcoord++;
+            isXminus = true;
+        }
+        if(temp.charAt(Ycoord) == '-'){
+            Ycoord++;
+            isYminus = true;
+        }
+        String Position = "";
+        char PosX=temp.charAt(Xcoord), PosY=temp.charAt(Ycoord);
+        if(isXminus && isYminus) Position = "X: -" + PosX + " Y: -" + PosY;
+        else if(isXminus) Position = "X: -" + PosX + " Y: " + PosY;
+        else if(isYminus) Position = "X: " + PosX + " Y: -" + PosY;
+        else Position = "X: " + PosX + " Y: " + PosY;
+
+
+        ChangeX += gyro.getRawGyroX();
+        ChangeY += gyro.getRawGyroY();
+        ChangeZ += gyro.getRawGyroZ();
+
+        SmartDashboard.putNumber("Robot Heading", getHeading());
+        SmartDashboard.putString("Robot Location meters", getPose().getTranslation().toString());
+        SmartDashboard.putString("Robot Location", Position);
         SmartDashboard.putNumber("FrontLeft Steer:", frontLeft.getTurningPosition());
         SmartDashboard.putNumber("FrontRight Steer:", frontRight.getTurningPosition());
         SmartDashboard.putNumber("BackLeft Steer:", backLeft.getTurningPosition());
@@ -116,11 +177,17 @@ public class SwerveSubsystem extends SubsystemBase {
         SmartDashboard.putBoolean("FLAG BL: ", backLeft.zeroModuleFlag);
         SmartDashboard.putBoolean("FLAG BR: ", backRight.zeroModuleFlag);
 
-        SmartDashboard.putNumber("Gyro angle: ", gyro.getAngle());
-        SmartDashboard.putNumber("Gyro yaw: ", gyro.getYaw());
-        SmartDashboard.putNumber("Gyro roll: ", gyro.getRoll());
-        SmartDashboard.putNumber("Gyro pitch: ", gyro.getPitch());
+        SmartDashboard.putNumber("Gyro angle: ", (0 - (gyro.getAngle())));
+        SmartDashboard.putNumber("Gyro yaw: ", (0 - (gyro.getYaw())));
+        SmartDashboard.putNumber("Gyro roll: ", (0 - (gyro.getRoll())));
+        SmartDashboard.putNumber("Gyro pitch: ", (0 - (gyro.getPitch())));
 
+        SmartDashboard.putNumber("Gyro X: ", gyro.getRawGyroX());
+        SmartDashboard.putNumber("Gyro Y: ", gyro.getRawGyroY());
+        SmartDashboard.putNumber("Gyro Z: ", gyro.getRawGyroZ());
+        SmartDashboard.putNumber("ChangeX: ", ChangeX);
+        SmartDashboard.putNumber("ChangeY: ", ChangeY);
+        SmartDashboard.putNumber("ChangeZ: ", ChangeZ);
         
         
     }

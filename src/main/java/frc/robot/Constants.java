@@ -5,21 +5,17 @@ import com.revrobotics.CANSparkMax;
 
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
-
-
-
-
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 
 public class Constants {
     public static final class ModuleConstants {
         // Colson wheel standard diameter in meters
         public static final double kWheelDiameterMeters = Units.inchesToMeters(4); 
-
-        // Colson wheel standard radius in meters
+        // Distance between front and back wheels
         public static final double kWheelRadiusMeters = kWheelDiameterMeters / 2;
 
-        
+        // Colson wheel standard radius in meters
         public static final double kDriveMotorGearRatio = 1/6.12; // 6.12
         public static final double kTurningMotorGearRatio = 1/21.4285714286; // 150/7
 
@@ -51,28 +47,45 @@ public class Constants {
 
     public static final class DriveConstants {
 
-        public static final double kTrackWidth = Units.inchesToMeters(27);
+        public static final double kTrackWidth = Units.inchesToMeters(23);
         // Distance between right and left wheels
-        public static final double kWheelBase = Units.inchesToMeters(25.5);
+        public static final double kWheelBase = Units.inchesToMeters(23);
         // Distance between front and back wheels
+        // public static final SwerveDriveKinematics kDriveKinematics = new SwerveDriveKinematics(
+        //         new Translation2d(kWheelBase / 2, kTrackWidth / 2), // frontLeft
+        //         new Translation2d(kWheelBase / 2, -kTrackWidth / 2), // frontRight
+        //         new Translation2d(-kWheelBase / 2, kTrackWidth / 2), // backLeft
+        //         new Translation2d(-kWheelBase / 2, -kTrackWidth / 2)); // backRight
+
         public static final SwerveDriveKinematics kDriveKinematics = new SwerveDriveKinematics(
+        // new Translation2d(-kWheelBase / 2, -kTrackWidth / 2), // frontLeft // - +
+        // new Translation2d(kWheelBase / 2, kTrackWidth / 2), // frontRight
+        // new Translation2d(-kWheelBase / 2, kTrackWidth / 2), // backLeft // + - backleft
+        // new Translation2d(kWheelBase / 2, -kTrackWidth / 2)); // backRight // + - // frontleft
+
+        new Translation2d(-kWheelBase / 2, -kTrackWidth / 2), // frontLeft // - +
+        new Translation2d(kWheelBase / 2, -kTrackWidth / 2), // frontRight
+        new Translation2d(-kWheelBase / 2, kTrackWidth / 2), // backLeft // + - backleft
+        new Translation2d(-kWheelBase / 2, -kTrackWidth / 2)); // backRight // + - // frontleft
+
+        /*public static final SwerveDriveKinematics kDriveKinematics = new SwerveDriveKinematics(
                 new Translation2d(kWheelBase / 2, kTrackWidth / 2), // frontLeft
                 new Translation2d(kWheelBase / 2, -kTrackWidth / 2), // frontRight
                 new Translation2d(-kWheelBase / 2, kTrackWidth / 2), // backLeft
                 new Translation2d(-kWheelBase / 2, -kTrackWidth / 2)); // backRight
-
+        */
         // 7, 6 (left CAN12) - 5, 4 (right CAN11) front
         // 8, 9 (left CAN13) - 2, 3 (right CAN10) back
 
-        public static final int kFrontLeftDriveMotorPort = 5; // 2
-        public static final int kBackLeftDriveMotorPort = 3; //  4
-        public static final int kFrontRightDriveMotorPort = 7; // 7
-        public static final int kBackRightDriveMotorPort = 9; // 8
+        public static final int kFrontLeftDriveMotorPort = 7; // 4
+        public static final int kBackLeftDriveMotorPort = 2; //  2
+        public static final int kFrontRightDriveMotorPort = 9; // 7
+        public static final int kBackRightDriveMotorPort = 4; // 9
 
-        public static final int kFrontLeftTurningMotorPort = 4; // 3
-        public static final int kBackLeftTurningMotorPort = 2; // 5
-        public static final int kFrontRightTurningMotorPort = 6; // 6
-        public static final int kBackRightTurningMotorPort = 8; // 9
+        public static final int kFrontLeftTurningMotorPort = 6; // 5
+        public static final int kBackLeftTurningMotorPort = 3; // 3
+        public static final int kFrontRightTurningMotorPort = 8; // 6
+        public static final int kBackRightTurningMotorPort = 5; // 8
 
         // CANcoders / AbsoluteEncoders
         public static final int kFrontLeftDriveAbsoluteEncoderPort = 11;
@@ -103,15 +116,22 @@ public class Constants {
         public static final double kBackRightDriveAbsoluteEncoderOffsetRad = 0; // -1.19497103 rad - -0.190185546875 percent
 
         public static final double kPhysicalMaxSpeedMetersPerSecond = 4.8768; //5
+        public static final double kPhysicalMaxAccelerationMetersPerSecondSquared = 2;
         public static final double kPhysicalMaxAngularSpeedRadiansPerSecond = 2 * 2 * Math.PI; // 2 * 2 * Math.PI
-
+        public static final double kPhysicalMaxAngularSpeedRadiansPerSecondSquared = 2 * 2 * Math.PI; // 2 * 2 * Math.PI
         public static final double kTeleDriveMaxSpeedMetersPerSecond = kPhysicalMaxSpeedMetersPerSecond / 12; // /4 // drive speed
         public static final double kTeleDriveMaxAngularSpeedRadiansPerSecond = //
                 kPhysicalMaxAngularSpeedRadiansPerSecond / 4; // /4
         public static final double kTeleDriveMaxAccelerationUnitsPerSecond = 3; // 3
         public static final double kTeleDriveMaxAngularAccelerationUnitsPerSecond = 3; // 3
 
-    }
+        public static final double kPXController = 1;
+        public static final double kPYController = 1;
+        public static final double kPThetaController = 1;
+        public static final TrapezoidProfile.Constraints kThetaControllerConstraints =
+        new TrapezoidProfile.Constraints(
+            kPhysicalMaxAngularSpeedRadiansPerSecond, kPhysicalMaxAngularSpeedRadiansPerSecondSquared);
+}
 
     public static final class OIConstants {
         public static final int kDriverControllerPort = 0;
@@ -122,5 +142,9 @@ public class Constants {
         public static final int kDriverFieldOrientedButtonIdx = 1;
 
         public static final double kDeadband = 0.05;
+    }
+    public static class PositionConstants {
+        public static int PosX = 0;//NEEDA CHANGE
+        public static int PosY = 0;//NEEDA CHANGE
     }
 }

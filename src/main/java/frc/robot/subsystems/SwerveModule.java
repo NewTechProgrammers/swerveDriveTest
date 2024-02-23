@@ -20,6 +20,7 @@ import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.ModuleConstants;
 
 import edu.wpi.first.math.geometry.*;
+import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 
 import com.revrobotics.CANSparkMax;
@@ -198,5 +199,10 @@ public class SwerveModule {
 
     public void zeroModuleFlagChange(){
         zeroModuleFlag = !zeroModuleFlag;
+    }
+
+    public SwerveModulePosition getPosition() {
+        return new SwerveModulePosition(
+            driveEncoder.getPosition(), new Rotation2d(turningEncoder.getPosition()));
     }
 }
