@@ -17,7 +17,6 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.DriveConstants;
-import frc.robot.Constants.PositionConstants;
 
 public class SwerveSubsystem extends SubsystemBase {
     public boolean flagZero = false;
@@ -86,7 +85,7 @@ public class SwerveSubsystem extends SubsystemBase {
     backLeft.getPosition(),
     backRight.getPosition()
     }, //HERE IS THY STARTING ORIENTATION AND POSITION IT SHALL'ETH BE CHANGED VIA A VARIABLE
-     new Pose2d(PositionConstants.PosX, PositionConstants.PosY, new Rotation2d()));
+     new Pose2d(0, 0, new Rotation2d()));
 
     public SwerveSubsystem() {
         new Thread(() -> {
@@ -147,12 +146,40 @@ public class SwerveSubsystem extends SubsystemBase {
             Ycoord++;
             isYminus = true;
         }
-        String Position = "";
-        char PosX=temp.charAt(Xcoord), PosY=temp.charAt(Ycoord);
-        if(isXminus && isYminus) Position = "X: -" + PosX + " Y: -" + PosY;
-        else if(isXminus) Position = "X: -" + PosX + " Y: " + PosY;
-        else if(isYminus) Position = "X: " + PosX + " Y: -" + PosY;
-        else Position = "X: " + PosX + " Y: " + PosY;
+        double PosX=0, PosY=0;
+        while(temp.charAt(Xcoord) != '.'){
+            PosX = PosX*10;
+            PosX = PosX + Character.getNumericValue(temp.charAt(Xcoord));
+            Xcoord++;
+        }
+        Xcoord++;
+        while(temp.charAt(Xcoord) != ','){
+            PosX = PosX*10;
+            PosX = PosX + Character.getNumericValue(temp.charAt(Xcoord));
+            Xcoord++;
+        }
+        while(temp.charAt(Ycoord) != '.'){
+            PosY = PosY*10;
+            PosY = PosY + Character.getNumericValue(temp.charAt(Ycoord));  
+            Ycoord++;
+        }
+        Ycoord++;
+        while(temp.charAt(Ycoord) != ')'){
+            PosY = PosY*10;
+            PosY = PosY + Character.getNumericValue(temp.charAt(Ycoord));  
+            Ycoord++;
+        }
+        if(isXminus && isYminus){
+            PosX = -PosX;
+            PosY = -PosY;
+        }
+        else if(isXminus) PosX = -PosX;
+        else if(isYminus) PosY = -PosY;
+        PosX = PosX/(5);
+        PosY = PosY/(5);
+        Math.round(PosX);
+        Math.round(PosY);
+        String Position = "X: " + PosX + " Y: " + PosY;
 
 
         ChangeX += gyro.getRawGyroX();

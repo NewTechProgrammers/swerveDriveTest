@@ -54,6 +54,12 @@ public class SwerveModule {
     public SwerveModule(int driveMotorId, int turningMotorId, boolean driveMotorReversed, boolean turningMotorReversed,
             int absoluteEncoderId, double absoluteEncoderOffset, boolean absoluteEncoderReversed) {
 
+        try {
+            Thread.sleep(400);
+        } catch (InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
         this.absoluteEncoderOffsetRad = absoluteEncoderOffset;
         this.absoluteEncoderReversed = absoluteEncoderReversed;
         // absoluteEncoder = new AnalogInput(absoluteEncoderId);
@@ -98,14 +104,14 @@ public class SwerveModule {
 
         // turningPidController.setPositionPIDWrappingMaxInput()
         turningPidController.enableContinuousInput(-Math.PI, Math.PI);
-
-        resetEncoders();
         try {
-            Thread.sleep(600);
+            Thread.sleep(800);
         } catch (InterruptedException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
+        resetEncoders();
+        
     }
 
     public double getDrivePosition() {

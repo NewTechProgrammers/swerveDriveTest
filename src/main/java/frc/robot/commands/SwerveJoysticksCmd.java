@@ -69,7 +69,7 @@ public class SwerveJoysticksCmd extends CommandBase {
         //   }
         //   else {
             chassisSpeeds = new ChassisSpeeds(xSpeed, ySpeed, turningSpeed);
-            System.out.println("WITHOUT FIELD ORIENT!");
+            //System.out.println("WITHOUT FIELD ORIENT!");
         //}
 
         // 5. Convert chassis speeds to idividual module states
