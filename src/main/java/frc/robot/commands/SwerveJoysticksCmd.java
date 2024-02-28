@@ -4,6 +4,7 @@ import java.util.function.Supplier;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 import frc.robot.subsystems.SwerveSubsystem;
@@ -65,7 +66,8 @@ public class SwerveJoysticksCmd extends CommandBase {
         //       // Relative to field
         //       chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
         //           xSpeed, ySpeed, turningSpeed, swerveSubsystem.getRotation2d());
-        //           System.out.println("CHASSIS SPEED WITH FIELD ORIENTED!");
+        //           SmartDashboard.putBoolean("FIELD-ORIENTED", true);
+        //           //System.out.println("CHASSIS SPEED WITH FIELD ORIENTED!");
         //   }
         //   else {
             chassisSpeeds = new ChassisSpeeds(xSpeed, ySpeed, turningSpeed);

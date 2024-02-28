@@ -35,7 +35,7 @@ public class RobotContainer {
             swerveSubsystem,
             () -> -driverJoystick.getRawAxis(OIConstants.kDriverYAxis),
             () -> -driverJoystick.getRawAxis(OIConstants.kDriverXAxis),
-            () -> driverJoystick.getRawAxis(OIConstants.kDriverRotAxis),
+            () -> -driverJoystick.getRawAxis(OIConstants.kDriverRotAxis),
             () -> !driverJoystick.getRawButton(OIConstants.kDriverFieldOrientedButtonIdx)));
 
         configureButtonBindings();
@@ -46,6 +46,9 @@ public class RobotContainer {
         //new JoystickButton(driverJoystick, 2).whenPressed(() -> swerveSubsystem.zeroHeading());
         //new JoystickButton(driverJoystick, 2).onTrue(() -> );
         new JoystickButton(driverJoystick, 1).onTrue(swerveSubsystem.runOnce(swerveSubsystem::wheelZeroing));
+        // new JoystickButton(driverJoystick, 2).onTrue(swerveSubsystem.runOnce(swerveSubsystem::setPWMTrue));
+        // new JoystickButton(driverJoystick, 2).onFalse(swerveSubsystem.runOnce(swerveSubsystem::setPWMTrueBackWard));
+        
     }
 
     // public Command wheelZeroingCommand(){
