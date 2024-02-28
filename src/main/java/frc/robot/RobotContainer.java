@@ -11,6 +11,7 @@ import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -20,13 +21,23 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.commands.SwerveJoysticksCmd;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
+
+
 
 import frc.robot.subsystems.SwerveModule;
 import frc.robot.subsystems.SwerveSubsystem;
+import frc.robot.subsystems.TakingModule;
 
 public class RobotContainer {
     
     private final SwerveSubsystem swerveSubsystem = new SwerveSubsystem();
+    private final TakingModule takingModule = new TakingModule(14, 20);
+    CommandXboxController exampleController = new CommandXboxController(OIConstants.kDriverControllerPort);
+
+    public Trigger leftTrigger = exampleController.leftTrigger(0.2);
+    public Trigger rightTrigger = exampleController.rightTrigger(0.2);
 
     private final Joystick driverJoystick = new Joystick(OIConstants.kDriverControllerPort);
 
@@ -46,9 +57,16 @@ public class RobotContainer {
         //new JoystickButton(driverJoystick, 2).whenPressed(() -> swerveSubsystem.zeroHeading());
         //new JoystickButton(driverJoystick, 2).onTrue(() -> );
         new JoystickButton(driverJoystick, 1).onTrue(swerveSubsystem.runOnce(swerveSubsystem::wheelZeroing));
-        // new JoystickButton(driverJoystick, 2).onTrue(swerveSubsystem.runOnce(swerveSubsystem::setPWMTrue));
-        // new JoystickButton(driverJoystick, 2).onFalse(swerveSubsystem.runOnce(swerveSubsystem::setPWMTrueBackWard));
+
+        new JoystickButton(driverJoystick, 5).onTrue(takingModule.runOnce(takingModule::onLeftBumper));
+        new JoystickButton(driverJoystick, 5).onFalse(takingModule.runOnce(takingModule::onRelease));
+
+        new JoystickButton(driverJoystick, 6).onTrue(takingModule.runOnce(takingModule::onRightBumper));
+        new JoystickButton(driverJoystick, 6).onFalse(takingModule.runOnce(takingModule::onRelease));
+
+        leftTrigger.whileTrue(takingModule.runOnce(takingModule::onLeftTrigger));
         
+        rightTrigger.whileTrue(takingModule.runOnce(takingModule::onRightTrigger));
     }
 
     // public Command wheelZeroingCommand(){

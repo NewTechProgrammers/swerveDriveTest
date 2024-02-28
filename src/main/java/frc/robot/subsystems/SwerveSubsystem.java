@@ -1,9 +1,9 @@
 package frc.robot.subsystems;
 
 import com.kauailabs.navx.frc.AHRS;
-import edu.wpi.first.wpilibj.SPI;
-import edu.wpi.first.wpilibj.motorcontrol.VictorSP;
 
+
+import edu.wpi.first.wpilibj.SPI;
 import java.io.*; 
 
 import edu.wpi.first.math.geometry.Pose2d;
@@ -75,8 +75,6 @@ public class SwerveSubsystem extends SubsystemBase {
 
     
     public AHRS gyro = new AHRS(SPI.Port.kMXP); // = new AHRS(SPI.Port.kMXP);
-
-    VictorSP victor = new VictorSP(0);
     // public final AHRS gyro = new AHRS(SPI.Port.kMXP);
 
     double ChangeX, ChangeY, ChangeZ;
@@ -88,7 +86,7 @@ public class SwerveSubsystem extends SubsystemBase {
     frontRight.getPosition(),
     backLeft.getPosition(),
     backRight.getPosition()
-    }, //HERE IS THY STARTING ORIENTATION AND POSITION IT SHALL'ETH BE CHANGED VIA A VARIABLE
+    }, //HERE IS THY STARTING ORIENTATION AND POSITION IT SHALL'ETH BE CHANGED VIA A VARIABLE // u r stinky
      new Pose2d(0, 0, new Rotation2d()));
 
     public SwerveSubsystem() {
@@ -125,24 +123,6 @@ public class SwerveSubsystem extends SubsystemBase {
         frontLeft.getPosition(), frontRight.getPosition(),
         backLeft.getPosition(), backRight.getPosition()
         },pose);
-    }
-
-    public void setPWMTrue(){
-        victor.set(0.9);
-        SmartDashboard.putBoolean("VICTOR0PWM", true);
-    }
-
-    public void setPWMFalse(){
-        victor.set(0.0);
-        SmartDashboard.putBoolean("VICTOR0PWM", false);
-    }
-
-    public void setPWMTrueBackWard(){
-         victor.set(-0.9);
-    }
-
-    public void tx(){
-        System.out.println("YYYY!");
     }
 
     @Override 

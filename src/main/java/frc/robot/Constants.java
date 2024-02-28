@@ -77,7 +77,7 @@ public class Constants {
         // 7, 6 (left CAN12) - 5, 4 (right CAN11) front
         // 8, 9 (left CAN13) - 2, 3 (right CAN10) back
 
-        public static final int kFrontLeftDriveMotorPort = 26; // 4 // 7
+        public static final int kFrontLeftDriveMotorPort = 26; // 4
         public static final int kBackLeftDriveMotorPort = 2; //  2
         public static final int kFrontRightDriveMotorPort = 9; // 7
         public static final int kBackRightDriveMotorPort = 4; // 9
@@ -87,8 +87,11 @@ public class Constants {
         public static final int kFrontRightTurningMotorPort = 8; // 6
         public static final int kBackRightTurningMotorPort = 5; // 8
 
+        public static final int kLeftTakingMotorPort = 14;  
+        public static final int kRightTakingMotorPort = 20;
+
         // CANcoders / AbsoluteEncoders
-        public static final int kFrontLeftDriveAbsoluteEncoderPort = 10; // 11 // 
+        public static final int kFrontLeftDriveAbsoluteEncoderPort = 10; // 11
         public static final int kBackLeftDriveAbsoluteEncoderPort = 12;
         public static final int kFrontRightDriveAbsoluteEncoderPort = 11; // 10
         public static final int kBackRightDriveAbsoluteEncoderPort = 13;
@@ -142,5 +145,9 @@ public class Constants {
         public static final int kDriverFieldOrientedButtonIdx = 1;
 
         public static final double kDeadband = 0.05;
+    }
+    public static class PositionConstants {
+        public static int PosX = 0;//NEEDA CHANGE // u r veryyyy stinky ;(
+        public static int PosY = 0;//NEEDA CHANGE
     }
 }
