@@ -4,6 +4,8 @@ import com.kauailabs.navx.frc.AHRS;
 
 
 import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.wpilibj.motorcontrol.VictorSP;
+
 import java.io.*; 
 
 import edu.wpi.first.math.geometry.Pose2d;
@@ -76,6 +78,8 @@ public class SwerveSubsystem extends SubsystemBase {
     
     public AHRS gyro = new AHRS(SPI.Port.kMXP); // = new AHRS(SPI.Port.kMXP);
     // public final AHRS gyro = new AHRS(SPI.Port.kMXP);
+
+    
 
     double ChangeX, ChangeY, ChangeZ;
 
