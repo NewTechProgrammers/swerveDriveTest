@@ -1,6 +1,9 @@
 package frc.robot.subsystems;
 
 import com.kauailabs.navx.frc.AHRS;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkLowLevel.MotorType;
+
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.motorcontrol.VictorSP;
 
@@ -76,6 +79,12 @@ public class SwerveSubsystem extends SubsystemBase {
     
     public AHRS gyro = new AHRS(SPI.Port.kMXP); // = new AHRS(SPI.Port.kMXP);
 
+    public CANSparkMax shoot1 = new CANSparkMax(30, MotorType.kBrushless);
+    public CANSparkMax shoot2 = new CANSparkMax(31, MotorType.kBrushless);
+    public CANSparkMax shoot3 = new CANSparkMax(32, MotorType.kBrushless);
+
+    public CANSparkMax rotate = new CANSparkMax(23, MotorType.kBrushless);
+
     VictorSP victor = new VictorSP(0);
     // public final AHRS gyro = new AHRS(SPI.Port.kMXP);
 
@@ -112,6 +121,32 @@ public class SwerveSubsystem extends SubsystemBase {
         return Math.IEEEremainder(gyro.getAngle(), 360);
     }
 
+    public void shoot(){
+        shoot1.set(-0.95);
+        shoot2.set(-0.25);
+        shoot3.set(-0.95);
+    }
+
+    public void shootOff(){
+        shoot1.set(0);
+        shoot2.set(0);
+        shoot3.set(0);
+    }
+
+    public void rotateP(){
+        rotate.set(-0.15);
+    }
+
+    public void rotateN(){
+        rotate.set(0.15);
+
+
+    }
+
+    public void rotateZ(){
+        rotate.set(0);
+    }
+
     public Rotation2d getRotation2d() {
         return Rotation2d.fromDegrees(getHeading());
     }
@@ -128,7 +163,7 @@ public class SwerveSubsystem extends SubsystemBase {
     }
 
     public void setPWMTrue(){
-        victor.set(0.9);
+        victor.set(-0.9);
         SmartDashboard.putBoolean("VICTOR0PWM", true);
     }
 
