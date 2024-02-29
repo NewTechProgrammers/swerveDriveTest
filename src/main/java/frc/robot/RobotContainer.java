@@ -10,6 +10,8 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
+import edu.wpi.first.math.trajectory.constraint.SwerveDriveKinematicsConstraint;
+import edu.wpi.first.math.trajectory.constraint.TrajectoryConstraint;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -46,6 +48,7 @@ public class RobotContainer {
         //new JoystickButton(driverJoystick, 2).whenPressed(() -> swerveSubsystem.zeroHeading());
         //new JoystickButton(driverJoystick, 2).onTrue(() -> );
         new JoystickButton(driverJoystick, 1).onTrue(swerveSubsystem.runOnce(swerveSubsystem::wheelZeroing));
+        new JoystickButton(driverJoystick, 2).onTrue(swerveSubsystem.runOnce(swerveSubsystem::resetgyro));
         // new JoystickButton(driverJoystick, 2).onTrue(swerveSubsystem.runOnce(swerveSubsystem::setPWMTrue));
         // new JoystickButton(driverJoystick, 2).onFalse(swerveSubsystem.runOnce(swerveSubsystem::setPWMTrueBackWard));
         
@@ -57,20 +60,19 @@ public class RobotContainer {
     // }
 
     public Command getAutonomousCommand(){
+        SwerveDriveKinematicsConstraint temp = new SwerveDriveKinematicsConstraint(DriveConstants.kDriveKinematics, DriveConstants.kPhysicalMaxSpeedMetersPerSecond);
+        
         //1. Create trajectory settings
         TrajectoryConfig trajectoryConfig = new TrajectoryConfig(
-        DriveConstants.kPhysicalMaxSpeedMetersPerSecond,
+        DriveConstants.kPhysicalMaxSpeedMetersPerSecond/8,
         DriveConstants.kPhysicalMaxAccelerationMetersPerSecondSquared)
             .setKinematics(DriveConstants.kDriveKinematics)
-            .addConstraint(null);
+            .addConstraint(temp);
         //2. Generate trajectory
         Trajectory trajectory = TrajectoryGenerator.generateTrajectory(
-        new Pose2d(0, 0, new Rotation2d(0)),
-            List.of(
-                    new Translation2d(1, 0),
-                    new Translation2d(1, -1)
-            ),
-            new Pose2d(2, -1, Rotation2d.fromDegrees(180)),
+        new Pose2d(1, 0, new Rotation2d(0)),
+            List.of( ),
+            new Pose2d(0, 0, Rotation2d.fromDegrees(0)),
             trajectoryConfig
         );
         //3. Define PID controllers for tracking trajectory

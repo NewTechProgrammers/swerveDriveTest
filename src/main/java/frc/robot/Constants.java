@@ -1,7 +1,4 @@
 package frc.robot;
-import com.ctre.phoenix6.hardware.CANcoder;
-import com.revrobotics.CANSparkLowLevel.MotorType;
-import com.revrobotics.CANSparkMax;
 
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
@@ -46,7 +43,9 @@ public class Constants {
     }
 
     public static final class DriveConstants {
-
+        public static final double ksVolts = 0.22;
+        public static final double kvVoltSecondsPerMeter = 1.98;
+        public static final double kaVoltSecondsSquaredPerMeter = 0.2;
         public static final double kTrackWidth = Units.inchesToMeters(23);
         // Distance between right and left wheels
         public static final double kWheelBase = Units.inchesToMeters(23);

@@ -4,8 +4,6 @@ import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.motorcontrol.VictorSP;
 
-import java.io.*; 
-
 import edu.wpi.first.math.geometry.Pose2d;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -17,7 +15,6 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
 import frc.robot.Constants.DriveConstants;
 
 public class SwerveSubsystem extends SubsystemBase {
@@ -79,7 +76,7 @@ public class SwerveSubsystem extends SubsystemBase {
     VictorSP victor = new VictorSP(0);
     // public final AHRS gyro = new AHRS(SPI.Port.kMXP);
 
-    double ChangeX, ChangeY, ChangeZ;
+    double ChangeX=0, ChangeY=0, ChangeZ=0;
 
     SwerveDriveOdometry odometry = new SwerveDriveOdometry(
     DriveConstants.kDriveKinematics, gyro.getRotation2d(),
@@ -109,7 +106,7 @@ public class SwerveSubsystem extends SubsystemBase {
     }
 
     public double getHeading() {
-        return Math.IEEEremainder(gyro.getAngle(), 360);
+        return Math.IEEEremainder(gyro.getAngle()*-1, 360);
     }
 
     public Rotation2d getRotation2d() {
@@ -145,6 +142,10 @@ public class SwerveSubsystem extends SubsystemBase {
         System.out.println("YYYY!");
     }
 
+    public void resetgyro(){
+        gyro.reset();
+    }
+
     @Override 
     public void periodic() {
         var gyroAngle = gyro.getRotation2d();
@@ -155,62 +156,17 @@ public class SwerveSubsystem extends SubsystemBase {
         frontLeft.getPosition(), frontRight.getPosition(),
         backLeft.getPosition(), backRight.getPosition()
         });
-        // make the pose to correct units
-        String temp = getPose().getTranslation().toString();
-        boolean isXminus = false, isYminus = false;
-        int Xcoord = temp.indexOf(": ")+2; 
-        int Ycoord = temp.lastIndexOf(": ")+2;
-        if(temp.charAt(Xcoord) == '-'){
-            Xcoord++;
-            isXminus = true;
-        }
-        if(temp.charAt(Ycoord) == '-'){
-            Ycoord++;
-            isYminus = true;
-        }
-        double PosX=0, PosY=0;
-        while(temp.charAt(Xcoord) != '.'){
-            PosX = PosX*10;
-            PosX = PosX + Character.getNumericValue(temp.charAt(Xcoord));
-            Xcoord++;
-        }
-        Xcoord++;
-        while(temp.charAt(Xcoord) != ','){
-            PosX = PosX*10;
-            PosX = PosX + Character.getNumericValue(temp.charAt(Xcoord));
-            Xcoord++;
-        }
-        while(temp.charAt(Ycoord) != '.'){
-            PosY = PosY*10;
-            PosY = PosY + Character.getNumericValue(temp.charAt(Ycoord));  
-            Ycoord++;
-        }
-        Ycoord++;
-        while(temp.charAt(Ycoord) != ')'){
-            PosY = PosY*10;
-            PosY = PosY + Character.getNumericValue(temp.charAt(Ycoord));  
-            Ycoord++;
-        }
-        if(isXminus && isYminus){
-            PosX = -PosX;
-            PosY = -PosY;
-        }
-        else if(isXminus) PosX = -PosX;
-        else if(isYminus) PosY = -PosY;
-        PosX = PosX/(5);
-        PosY = PosY/(5);
-        Math.round(PosX);
-        Math.round(PosY);
-        String Position = "X: " + PosX + " Y: " + PosY;
-
+        
 
         ChangeX += gyro.getRawGyroX();
         ChangeY += gyro.getRawGyroY();
         ChangeZ += gyro.getRawGyroZ();
 
+        ChangeX = ChangeX/-1;
+        ChangeY = ChangeY/-1;
+
         SmartDashboard.putNumber("Robot Heading", getHeading());
-        SmartDashboard.putString("Robot Location meters", getPose().getTranslation().toString());
-        SmartDashboard.putString("Robot Location", Position);
+        SmartDashboard.putString("Robot Location", getPose().getTranslation().toString());
         SmartDashboard.putNumber("FrontLeft Steer:", frontLeft.getTurningPosition());
         SmartDashboard.putNumber("FrontRight Steer:", frontRight.getTurningPosition());
         SmartDashboard.putNumber("BackLeft Steer:", backLeft.getTurningPosition());
