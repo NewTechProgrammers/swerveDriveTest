@@ -79,13 +79,9 @@ public class SwerveSubsystem extends SubsystemBase {
     
     public AHRS gyro = new AHRS(SPI.Port.kMXP); // = new AHRS(SPI.Port.kMXP);
 
-    public CANSparkMax shoot1 = new CANSparkMax(30, MotorType.kBrushless);
-    public CANSparkMax shoot2 = new CANSparkMax(31, MotorType.kBrushless);
-    public CANSparkMax shoot3 = new CANSparkMax(32, MotorType.kBrushless);
+    
+    //public CANSparkMax rotate = new CANSparkMax(23, MotorType.kBrushless);
 
-    public CANSparkMax rotate = new CANSparkMax(23, MotorType.kBrushless);
-
-    VictorSP victor = new VictorSP(0);
     // public final AHRS gyro = new AHRS(SPI.Port.kMXP);
 
     double ChangeX, ChangeY, ChangeZ;
@@ -97,7 +93,7 @@ public class SwerveSubsystem extends SubsystemBase {
     frontRight.getPosition(),
     backLeft.getPosition(),
     backRight.getPosition()
-    }, //HERE IS THY STARTING ORIENTATION AND POSITION IT SHALL'ETH BE CHANGED VIA A VARIABLE
+    }, //HERE IS THY STARTING ORIENTATION AND POSITION IT SHALL'ETH BE CHANGED VIA A VARIABLE // u stinky
      new Pose2d(0, 0, new Rotation2d()));
 
     public SwerveSubsystem() {
@@ -121,31 +117,31 @@ public class SwerveSubsystem extends SubsystemBase {
         return Math.IEEEremainder(gyro.getAngle(), 360);
     }
 
-    public void shoot(){
-        shoot1.set(-0.95);
-        shoot2.set(-0.25);
-        shoot3.set(-0.95);
-    }
+    // public void shoot(){
+    //     shoot1.set(-0.95);
+    //     shoot2.set(-0.25);
+    //     shoot3.set(-0.95);
+    // }
 
-    public void shootOff(){
-        shoot1.set(0);
-        shoot2.set(0);
-        shoot3.set(0);
-    }
+    // public void shootOff(){
+    //     shoot1.set(0);
+    //     shoot2.set(0);
+    //     shoot3.set(0);
+    // }
 
-    public void rotateP(){
-        rotate.set(-0.15);
-    }
+    // public void rotateP(){
+    //     rotate.set(-0.15);
+    // }
 
-    public void rotateN(){
-        rotate.set(0.15);
+    // public void rotateN(){
+    //     rotate.set(0.15);
 
 
-    }
+    // }
 
-    public void rotateZ(){
-        rotate.set(0);
-    }
+    // public void rotateZ(){
+    //     rotate.set(0);
+    // }
 
     public Rotation2d getRotation2d() {
         return Rotation2d.fromDegrees(getHeading());
@@ -162,19 +158,6 @@ public class SwerveSubsystem extends SubsystemBase {
         },pose);
     }
 
-    public void setPWMTrue(){
-        victor.set(-0.9);
-        SmartDashboard.putBoolean("VICTOR0PWM", true);
-    }
-
-    public void setPWMFalse(){
-        victor.set(0.0);
-        SmartDashboard.putBoolean("VICTOR0PWM", false);
-    }
-
-    public void setPWMTrueBackWard(){
-         victor.set(-0.9);
-    }
 
     public void tx(){
         System.out.println("YYYY!");

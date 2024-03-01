@@ -77,7 +77,7 @@ public class Constants {
         // 7, 6 (left CAN12) - 5, 4 (right CAN11) front
         // 8, 9 (left CAN13) - 2, 3 (right CAN10) back
 
-        public static final int kFrontLeftDriveMotorPort = 26; // 4 // 7
+        public static final int kFrontLeftDriveMotorPort = 7; // 4 // 7
         public static final int kBackLeftDriveMotorPort = 2; //  2
         public static final int kFrontRightDriveMotorPort = 9; // 7
         public static final int kBackRightDriveMotorPort = 4; // 9
