@@ -17,8 +17,9 @@ public class TakingModule extends SubsystemBase
     private RelativeEncoder turningEncoder;
 
     public CANSparkMax popychaniechyba;
-    public CANSparkMax shoot2;
-    public CANSparkMax shoot3;
+    public CANSparkMax shoot2; // popychanie
+    public CANSparkMax shoot3; // strzelanie
+
 
 
     PIDController bigMotor1PidController = new PIDController(0.01, 0, 0);
@@ -75,12 +76,13 @@ public class TakingModule extends SubsystemBase
     public void onLeftTrigger()
     {
             popychaniechyba.set(-0.95);
+            shoot3.set(-0.95);
     }
 
     public void onRightTrigger()
     {
-            shoot2.set(-0.25);
-            shoot3.set(-0.95);
+            shoot2.set(-0.5);
+            //shoot3.set(-0.95);
     }
 
     double degreesToRadians(double degrees)
@@ -105,13 +107,14 @@ public class TakingModule extends SubsystemBase
 
     public void onReleaseRightTrigger()
     {
-        shoot2.set(0);
-        shoot3.set(0);
+        shoot2.set(0); // popychanie
+        
     }
 
     public void onReleaseLeftTrigger()
     {
             popychaniechyba.set(0);
+            shoot3.set(0);
     }
 
 }

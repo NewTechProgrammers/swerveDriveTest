@@ -78,12 +78,12 @@ public class Constants {
         // 8, 9 (left CAN13) - 2, 3 (right CAN10) back
 
         public static final int kFrontLeftDriveMotorPort = 7; // 4 // 7
-        public static final int kBackLeftDriveMotorPort = 2; //  2
+        public static final int kBackLeftDriveMotorPort = 3; //  2 // 
         public static final int kFrontRightDriveMotorPort = 9; // 7
-        public static final int kBackRightDriveMotorPort = 4; // 9
+        public static final int kBackRightDriveMotorPort = 4; // 9 //
 
         public static final int kFrontLeftTurningMotorPort = 6; // 5
-        public static final int kBackLeftTurningMotorPort = 3; // 3
+        public static final int kBackLeftTurningMotorPort = 2; // 3 //
         public static final int kFrontRightTurningMotorPort = 8; // 6
         public static final int kBackRightTurningMotorPort = 5; // 8
 
@@ -135,6 +135,8 @@ public class Constants {
 
     public static final class OIConstants {
         public static final int kDriverControllerPort = 0;
+
+        public static final int kSupportControllerPort = 1;
 
         public static final int kDriverYAxis = 1;
         public static final int kDriverXAxis = 0;
