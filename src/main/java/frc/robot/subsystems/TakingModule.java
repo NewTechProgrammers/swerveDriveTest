@@ -6,6 +6,7 @@ import com.revrobotics.RelativeEncoder;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.motorcontrol.VictorSP;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ModuleConstants;
 
@@ -16,7 +17,7 @@ public class TakingModule extends SubsystemBase
     private CANSparkMax bigMotor1;
     private RelativeEncoder turningEncoder;
 
-    public CANSparkMax popychaniechyba;
+    public CANSparkMax popychaniechyba; // strzelanie
     public CANSparkMax shoot2; // popychanie
     public CANSparkMax shoot3; // strzelanie
 
@@ -24,6 +25,9 @@ public class TakingModule extends SubsystemBase
 
     PIDController bigMotor1PidController = new PIDController(0.01, 0, 0);
     VictorSP actuator = new VictorSP(0);
+
+    VictorSP lift1 = new VictorSP(1);
+    VictorSP lift2 = new VictorSP(9);
 
     public TakingModule(int smallMotor1Id, int smallMotor2Id, int bigMotor1Id, int shoot1Id, int shoot2Id, int shoot3Id)
     {
@@ -75,8 +79,10 @@ public class TakingModule extends SubsystemBase
 
     public void onLeftTrigger()
     {
-            popychaniechyba.set(-0.95);
-            shoot3.set(-0.95);
+            popychaniechyba.set(-0.60); // -0.95
+            shoot3.set(-0.60); // -0.95
+            SmartDashboard.putNumber("Shooter3 velocity: ", shoot3.getEncoder().getVelocity());
+            SmartDashboard.putNumber("Popychaniec velocity: ", popychaniechyba.getEncoder().getVelocity());
     }
 
     public void onRightTrigger()
@@ -115,6 +121,21 @@ public class TakingModule extends SubsystemBase
     {
             popychaniechyba.set(0);
             shoot3.set(0);
+    }
+
+    public void liftUp(){
+        lift1.set(0.9);
+        lift2.set(0.9);
+    }
+
+    public void liftDown(){ 
+        lift1.set(-0.9);
+        lift2.set(-0.9);
+    }
+
+    public void liftStop(){
+        lift1.set(0);
+        lift2.set(0);
     }
 
 }

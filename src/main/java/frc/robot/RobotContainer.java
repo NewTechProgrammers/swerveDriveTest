@@ -85,6 +85,14 @@ public class RobotContainer {
         new JoystickButton(supportJoystick, 6).onTrue(takingModule.runOnce(takingModule::onRightBumper));
         new JoystickButton(supportJoystick, 6).onFalse(takingModule.runOnce(takingModule::onReleaseSmallMotor));
 
+        
+        new JoystickButton(supportJoystick, 1).onTrue(takingModule.runOnce(takingModule::liftUp));
+        new JoystickButton(supportJoystick, 1).onFalse(takingModule.runOnce(takingModule::liftStop));
+
+
+        new JoystickButton(supportJoystick, 2).onTrue(takingModule.runOnce(takingModule::liftDown));
+        new JoystickButton(supportJoystick, 2).onFalse(takingModule.runOnce(takingModule::liftStop));
+
         leftTrigger.whileTrue(takingModule.runOnce(takingModule::onLeftTrigger));
         leftTrigger.whileFalse(takingModule.runOnce(takingModule::onReleaseLeftTrigger));
 
