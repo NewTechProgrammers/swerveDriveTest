@@ -79,10 +79,15 @@ public class TakingModule extends SubsystemBase
 
     public void onLeftTrigger()
     {
-            popychaniechyba.set(-0.60); // -0.95
-            shoot3.set(-0.60); // -0.95
+            popychaniechyba.set(-0.95); // -0.95
+            shoot3.set(-0.95); // -0.95
             SmartDashboard.putNumber("Shooter3 velocity: ", shoot3.getEncoder().getVelocity());
             SmartDashboard.putNumber("Popychaniec velocity: ", popychaniechyba.getEncoder().getVelocity());
+    }
+
+    public void onPOVTaking(){
+        popychaniechyba.set(0.4);
+        shoot3.set(0.4);
     }
 
     public void onRightTrigger()
@@ -125,12 +130,12 @@ public class TakingModule extends SubsystemBase
 
     public void liftUp(){
         lift1.set(0.9);
-        lift2.set(0.9);
+        lift2.set(-0.9);
     }
 
     public void liftDown(){ 
         lift1.set(-0.9);
-        lift2.set(-0.9);
+        lift2.set(0.9);
     }
 
     public void liftStop(){

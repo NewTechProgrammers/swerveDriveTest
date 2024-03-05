@@ -84,7 +84,7 @@ public class SwerveSubsystem extends SubsystemBase {
 
     // public final AHRS gyro = new AHRS(SPI.Port.kMXP);
 
-    double ChangeX, ChangeY, ChangeZ;
+    double ChangeX, ChangeY, ChangeZ = 0;
 
     SwerveDriveOdometry odometry = new SwerveDriveOdometry(
     DriveConstants.kDriveKinematics, gyro.getRotation2d(),
@@ -93,8 +93,9 @@ public class SwerveSubsystem extends SubsystemBase {
     frontRight.getPosition(),
     backLeft.getPosition(),
     backRight.getPosition()
-    }, //HERE IS THY STARTING ORIENTATION AND POSITION IT SHALL'ETH BE CHANGED VIA A VARIABLE // u stinky
+    }, //HERE IS THY STARTING ORIENTATION AND POSITION IT SHALL'ETH BE CHANGED VIA A VARIABLE
      new Pose2d(0, 0, new Rotation2d()));
+
 
     public SwerveSubsystem() {
         new Thread(() -> {
@@ -114,7 +115,7 @@ public class SwerveSubsystem extends SubsystemBase {
     }
 
     public double getHeading() {
-        return Math.IEEEremainder(gyro.getAngle(), 360);
+        return Math.IEEEremainder(gyro.getAngle()*-1, 360);
     }
 
     // public void shoot(){
@@ -165,62 +166,15 @@ public class SwerveSubsystem extends SubsystemBase {
 
     @Override 
     public void periodic() {
-        // var gyroAngle = gyro.getRotation2d();
+        var gyroAngle = gyro.getRotation2d();
+        
 
-        // // Update the pose
-        // odometry.update(gyroAngle,
-        // new SwerveModulePosition[] {
-        // frontLeft.getPosition(), frontRight.getPosition(),
-        // backLeft.getPosition(), backRight.getPosition()
-        // });
-        // // make the pose to correct units
-        // String temp = getPose().getTranslation().toString();
-        // boolean isXminus = false, isYminus = false;
-        // int Xcoord = temp.indexOf(": ")+2; 
-        // int Ycoord = temp.lastIndexOf(": ")+2;
-        // if(temp.charAt(Xcoord) == '-'){
-        //     Xcoord++;
-        //     isXminus = true;
-        // }
-        // if(temp.charAt(Ycoord) == '-'){
-        //     Ycoord++;
-        //     isYminus = true;
-        // }
-        // double PosX=0, PosY=0;
-        // while(temp.charAt(Xcoord) != '.'){
-        //     PosX = PosX*10;
-        //     PosX = PosX + Character.getNumericValue(temp.charAt(Xcoord));
-        //     Xcoord++;
-        // }
-        // Xcoord++;
-        // while(temp.charAt(Xcoord) != ','){
-        //     PosX = PosX*10;
-        //     PosX = PosX + Character.getNumericValue(temp.charAt(Xcoord));
-        //     Xcoord++;
-        // }
-        // while(temp.charAt(Ycoord) != '.'){
-        //     PosY = PosY*10;
-        //     PosY = PosY + Character.getNumericValue(temp.charAt(Ycoord));  
-        //     Ycoord++;
-        // }
-        // Ycoord++;
-        // while(temp.charAt(Ycoord) != ')'){
-        //     PosY = PosY*10;
-        //     PosY = PosY + Character.getNumericValue(temp.charAt(Ycoord));  
-        //     Ycoord++;
-        // }
-        // if(isXminus && isYminus){
-        //     PosX = -PosX;
-        //     PosY = -PosY;
-        // }
-        // else if(isXminus) PosX = -PosX;
-        // else if(isYminus) PosY = -PosY;
-        // PosX = PosX/(5);
-        // PosY = PosY/(5);
-        // Math.round(PosX);
-        // Math.round(PosY);
-        // String Position = "X: " + PosX + " Y: " + PosY;
-
+        // Update the pose
+        odometry.update(gyroAngle,
+        new SwerveModulePosition[] {
+        frontLeft.getPosition(), frontRight.getPosition(),
+        backLeft.getPosition(), backRight.getPosition()
+        });
 
         ChangeX += gyro.getRawGyroX();
         ChangeY += gyro.getRawGyroY();
